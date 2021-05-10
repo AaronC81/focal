@@ -13,7 +13,11 @@ module Focal
 
       def image_by_name(name)
         image_library.image_by_name(self, name)
-      end  
+      end
+
+      def url
+        "/album/#{CGI.escape(name)}"
+      end
     end
 
     Image = Struct.new('Image', :album, :name, :archived) do
@@ -25,6 +29,10 @@ module Focal
         else
           File.join(album.path, name)
         end
+      end
+
+      def url
+        "/img/#{CGI.escape(album.name)}/#{CGI.escape(name)}"
       end
     end
 

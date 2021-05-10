@@ -14,7 +14,7 @@
                 items: [
                     <% images.each do |image| %>
                         {
-                            src: '/img/<%= image.album.name %>/<%= image.name %>',
+                            src: "<%= image.url %>",
                         },
                     <% end %>
                 ],

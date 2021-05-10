@@ -24,5 +24,11 @@ module Focal
 
       erb :album, locals: { images: album.images }
     end
+
+    get '/' do
+      albums = settings.image_library.albums
+
+      erb :index, locals: { albums: albums }
+    end
   end
 end
