@@ -1,7 +1,5 @@
 require_relative '../app/image_library'
 
-TEST_LIBRARY_PATH = File.expand_path(File.join(__dir__, 'test_library'))
-
 RSpec.describe Focal::ImageLibrary do
   let(:subject) { described_class.new(TEST_LIBRARY_PATH) }
 

@@ -10,6 +10,10 @@ module Focal
       def images(include_archived: false)
         image_library.album_images(self, include_archived: include_archived)
       end
+
+      def image_by_name(name)
+        image_library.image_by_name(self, name)
+      end  
     end
 
     Image = Struct.new('Image', :album, :name, :archived) do
@@ -17,9 +21,9 @@ module Focal
 
       def path
         if archived?
-          File.join(album.path, name)
-        else
           File.join(album.path, ARCHIVED_DIR_NAME, name)
+        else
+          File.join(album.path, name)
         end
       end
     end
@@ -56,6 +60,10 @@ module Focal
       end
 
       images.sort_by(&:name)
+    end
+
+    def image_by_name(album, name)
+      album.images.find { |image| image.name == name }
     end
   end
 end

@@ -98,3 +98,5 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
+
+TEST_LIBRARY_PATH = File.expand_path(File.join(__dir__, 'test_library'))
