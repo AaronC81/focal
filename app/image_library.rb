@@ -71,7 +71,7 @@ module Focal
     end
 
     def image_by_name(album, name)
-      album.images.find { |image| image.name == name }
+      album.images(include_archived: true).find { |image| image.name == name }
     end
   end
 end

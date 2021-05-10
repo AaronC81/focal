@@ -22,7 +22,9 @@ module Focal
       album = settings.image_library.album_by_name(album_name)
       halt 404, 'Album not found' if album.nil?
 
-      erb :album, locals: { images: album.images }
+      include_archived = !!params['archived']
+
+      erb :album, locals: { images: album.images(include_archived: include_archived) }
     end
 
     get '/' do
