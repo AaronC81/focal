@@ -24,7 +24,11 @@ module Focal
 
       include_archived = !!params['archived']
 
-      erb :album, locals: { images: album.images(include_archived: include_archived) }
+      erb :album, locals: {
+        include_archived: include_archived,
+        album: album,
+        images: album.images(include_archived: include_archived)
+      }
     end
 
     get '/' do
