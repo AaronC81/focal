@@ -8,7 +8,7 @@ RSpec.describe Focal::App do
   include Rack::Test::Methods
 
   let(:image_library) { Focal::ImageLibrary.new(TEST_LIBRARY_PATH) }
-  let(:app) { described_class.new(image_library) }
+  let(:app) { described_class }
 
   before do
     app.set :image_library, image_library
