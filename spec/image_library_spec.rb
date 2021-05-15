@@ -32,6 +32,8 @@ RSpec.describe Focal::ImageLibrary do
       # Remove the test library
       FileUtils.rm_rf(copy.library_path)
     end if @library_test_copies&.any? && !ENV['FOCAL_KEEP_LIBRARY_TEST_COPIES']
+
+    @library_test_copies = []
   end
 
   it 'loads albums' do
