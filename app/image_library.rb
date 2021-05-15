@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module Focal
   class ImageLibrary
     ARCHIVED_DIR_NAME = 'Archived'
@@ -15,6 +17,10 @@ module Focal
         image_library.image_by_name(self, name)
       end
 
+      def ensure_archive_exists
+        FileUtils.mkdir_p(File.join(path, ARCHIVED_DIR_NAME))
+      end
+
       def url
         "/album/#{CGI.escape(name)}"
       end
@@ -25,14 +31,35 @@ module Focal
 
       def path
         if archived?
-          File.join(album.path, ARCHIVED_DIR_NAME, name)
+          path_if_archived
         else
-          File.join(album.path, name)
+          path_if_not_archived
         end
+      end
+
+      def archive
+        album.ensure_archive_exists
+        FileUtils.move(path, path_if_archived)
+        self.archived = true
+      end
+
+      def unarchive
+        FileUtils.move(path, path_if_not_archived)
+        self.archived = false
       end
 
       def url
         "/img/#{CGI.escape(album.name)}/#{CGI.escape(name)}"
+      end
+
+      protected
+
+      def path_if_archived
+        File.join(album.path, ARCHIVED_DIR_NAME, name)
+      end
+
+      def path_if_not_archived
+        File.join(album.path, name)
       end
     end
 

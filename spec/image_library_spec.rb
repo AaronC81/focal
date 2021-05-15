@@ -19,6 +19,10 @@ RSpec.describe Focal::ImageLibrary do
     new_library
   end
 
+  def rel_path(*parts)
+    File.join(subject.library_path, *parts)
+  end
+
   after :each do
     @library_test_copies.each do |copy|
       # Sanity check! Let's not nuke any systems
@@ -47,5 +51,21 @@ RSpec.describe Focal::ImageLibrary do
       have_attributes(name: 'Geese2.jpg', archived: false),
       have_attributes(name: 'Geese3.jpg', archived: true),
     ])
+  end
+
+  it 'archives and unarchives images' do
+    subject.album_by_name("Library A").image_by_name("Geese1.jpg").archive
+    subject.album_by_name("Library A").image_by_name("Geese3.jpg").unarchive
+
+    subject.album_by_name("Library B").image_by_name("Ducks1.jpg").archive
+
+    expect(File.exist?(rel_path("Library A", "Archived", "Geese1.jpg"))).to eq true
+    expect(File.exist?(rel_path("Library A", "Geese1.jpg"))).to eq false
+
+    expect(File.exist?(rel_path("Library A", "Archived", "Geese3.jpg"))).to eq false
+    expect(File.exist?(rel_path("Library A", "Geese3.jpg"))).to eq true
+
+    expect(File.exist?(rel_path("Library B", "Archived", "Ducks1.jpg"))).to eq true
+    expect(File.exist?(rel_path("Library B", "Ducks1.jpg"))).to eq false
   end
 end
