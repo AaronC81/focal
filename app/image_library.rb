@@ -36,6 +36,10 @@ module Focal
       def ensure_thumbnail_dir_exists
         FileUtils.mkdir_p(thumbnail_path)
       end
+
+      def clear_thumbnails
+        FileUtils.rm_rf(thumbnail_path)
+      end
     end
 
     Image = Struct.new('Image', :album, :name, :archived) do

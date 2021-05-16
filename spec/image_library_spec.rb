@@ -8,6 +8,12 @@ RSpec.describe Focal::ImageLibrary do
     File.join(subject.library_path, *parts)
   end
 
+  before :each do
+    subject.albums.each do |album|
+      album.clear_thumbnails
+    end
+  end
+
   after :each do
     @library_test_copies.each do |copy|
       # Sanity check! Let's not nuke any systems
@@ -64,5 +70,16 @@ RSpec.describe Focal::ImageLibrary do
     expect(img.thumbnail_generated?).to eq true
 
     expect(File.exist?(img.thumbnail_path)).to eq true
+  end
+
+  it 'allows thumbnails to be cleared' do
+    img = subject.album_by_name("Library A").image_by_name("Geese1.jpg")
+
+    expect(img.thumbnail_generated?).to eq false
+    img.generate_thumbnail
+    expect(img.thumbnail_generated?).to eq true
+
+    subject.album_by_name("Library A").clear_thumbnails
+    expect(img.thumbnail_generated?).to eq false
   end
 end
