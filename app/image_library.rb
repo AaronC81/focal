@@ -1,8 +1,12 @@
 require 'fileutils'
+require 'digest'
+require 'rmagick'
 
 module Focal
   class ImageLibrary
     ARCHIVED_DIR_NAME = 'Archived'
+    THUMBNAIL_DIR_NAME = '.FocalThumbs'
+    THUMBNAIL_WIDTH = 300
 
     Album = Struct.new('Album', :image_library, :name) do
       def path
@@ -52,6 +56,40 @@ module Focal
         "/img/#{CGI.escape(album.name)}/#{CGI.escape(name)}"
       end
 
+      def thumbnail_id
+        # The thumbnail ID is always based on the path if the image isn't
+        # archived, so we don't generate the thumbnail again if the image is
+        # archived
+        Digest::SHA2.hexdigest(path_if_not_archived)
+      end
+
+      def thumbnail_path
+        File.join(album.image_library.thumbnail_path, "#{thumbnail_id}.jpg")
+      end
+
+      def thumbnail_generated?
+        File.exist?(thumbnail_path)
+      end
+
+      def generate_thumbnail
+        album.image_library.ensure_thumbnail_dir_exists
+
+        rmagick_image = load_rmagick
+        new_width = THUMBNAIL_WIDTH
+        new_height = rmagick_image.y_resolution.to_i / (rmagick_image.x_resolution.to_i / new_width)
+
+        rmagick_thumbnail = rmagick_image.thumbnail(new_width, new_height)
+        rmagick_thumbnail.write(thumbnail_path)
+      end
+
+      def ensure_thumbnail_generated
+        generate_thumbnail unless thumbnail_generated?
+      end
+
+      def load_rmagick
+        Magick::Image.read(path).first
+      end
+
       protected
 
       def path_if_archived
@@ -99,6 +137,14 @@ module Focal
 
     def image_by_name(album, name)
       album.images(include_archived: true).find { |image| image.name == name }
+    end
+
+    def thumbnail_path
+      File.join(library_path, THUMBNAIL_DIR_NAME)
+    end
+
+    def ensure_thumbnail_dir_exists
+      FileUtils.mkdir_p(thumbnail_path)
     end
   end
 end

@@ -70,4 +70,30 @@ RSpec.describe Focal::ImageLibrary do
     expect(File.exist?(rel_path("Library B", "Archived", "Ducks1.jpg"))).to eq true
     expect(File.exist?(rel_path("Library B", "Ducks1.jpg"))).to eq false
   end
+
+  it 'assigns images a unique and consistent thumbnail ID' do
+    img1 = subject.album_by_name("Library A").image_by_name("Geese1.jpg")
+    img2 = subject.album_by_name("Library A").image_by_name("Geese2.jpg")
+
+    img1_id_before_archive = img1.thumbnail_id
+    img1.archive
+    img1_id_after_archive = img1.thumbnail_id
+    img1.unarchive
+    img1_id_after_unarchive = img1.thumbnail_id
+
+    expect(img1_id_before_archive).to eq img1_id_after_archive
+    expect(img1_id_before_archive).to eq img1_id_after_unarchive
+
+    expect(img1_id_before_archive).not_to eq img2.thumbnail_id
+  end
+
+  it 'generates thumbnails' do
+    img = subject.album_by_name("Library A").image_by_name("Geese1.jpg")
+
+    expect(img.thumbnail_generated?).to eq false
+    img.generate_thumbnail
+    expect(img.thumbnail_generated?).to eq true
+
+    expect(File.exist?(img.thumbnail_path)).to eq true
+  end
 end
