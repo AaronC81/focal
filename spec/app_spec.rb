@@ -13,6 +13,11 @@ RSpec.describe Focal::App do
     app.set :image_library, create_test_copy
   end
 
+  def authenticate
+    post '/authenticate', { password: TEST_LIBRARY_PASSWORD }
+    expect(last_response.status).to eq 302
+  end
+
   context '/img endpoint' do
     it 'returns valid images' do
       get '/img/Library%20A/Geese1.jpg'
@@ -37,7 +42,14 @@ RSpec.describe Focal::App do
     end
 
     context 'modification' do
+      it 'requires authentication' do
+        post '/img/Library%20A/Geese1.jpg/archive'
+        expect(last_response.status).to eq 401
+      end
+
       it 'can archive images' do
+        authenticate
+
         post '/img/Library%20A/Geese1.jpg/archive'
         expect(last_response.status).to eq 200
 
@@ -46,6 +58,8 @@ RSpec.describe Focal::App do
       end
 
       it 'can unarchive images' do
+        authenticate
+
         post '/img/Library%20A/Geese3.jpg/unarchive'
         expect(last_response.status).to eq 200
 

@@ -38,9 +38,12 @@
 
             async function archiveSelection() {
                 await Promise.all(getSelectedImages().map(async (img) => {
-                    await fetch(img.src + "/archive", {
+                    const response = await fetch(img.src + "/archive", {
                         method: "POST",
                     });
+                    if (response.status != 200 && response.status != 204) {
+                        throw response;
+                    }
                     img.customData.focal.archived = true;
                     thumbnailInit(null, img, null);
                 }));
@@ -49,9 +52,12 @@
 
             async function unarchiveSelection() {
                 await Promise.all(getSelectedImages().map(async (img) => {
-                    await fetch(img.src + "/unarchive", {
+                    const response = await fetch(img.src + "/unarchive", {
                         method: "POST",
                     });
+                    if (response.status != 200 && response.status != 204) {
+                        throw response;
+                    }
                     img.customData.focal.archived = false;
                     thumbnailInit(null, img, null);
                 }));

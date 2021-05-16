@@ -99,7 +99,8 @@ RSpec.configure do |config|
 =end
 end
 
-TEST_LIBRARY_PATH = File.expand_path(File.join(__dir__, 'test_library')) 
+TEST_LIBRARY_PATH = File.expand_path(File.join(__dir__, 'test_library'))
+TEST_LIBRARY_PASSWORD = "password"
 
 def create_test_copy
   # Generate a dir under /tmp

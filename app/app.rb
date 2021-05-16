@@ -2,9 +2,25 @@ require 'sinatra/base'
 require 'sinatra/namespace'
 require 'cgi'
 
+require_relative 'authentication'
+
 module Focal
   class App < Sinatra::Application
     register Sinatra::Namespace
+    enable :sessions
+
+    def authentication
+      @authentication ||= Focal::Authentication.new(settings.image_library.library_path)
+      @authentication
+    end
+
+    def authenticated!
+      halt 401 unless authenticated?
+    end
+
+    def authenticated?
+      !!session[:authenticated]
+    end
 
     def request_image
       album_name = CGI.unescape(params['album'])
@@ -25,6 +41,8 @@ module Focal
       end
 
       post '/archive' do
+        authenticated!
+
         image = request_image
         if image.archived?
           status 204
@@ -35,6 +53,8 @@ module Focal
       end
 
       post '/unarchive' do
+        authenticated!
+
         image = request_image
         if image.archived?
           image.unarchive
@@ -70,6 +90,15 @@ module Focal
       albums = settings.image_library.albums
 
       erb :index, locals: { albums: albums }
+    end
+
+    post '/authenticate' do
+      if params['password'] && authentication.correct_password?(params['password'])
+        session[:authenticated] = true
+        redirect '/'
+      else
+        halt 401, "Incorrect password"
+      end
     end
   end
 end

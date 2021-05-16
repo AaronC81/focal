@@ -1,6 +1,10 @@
 <!doctype html>
 <html>
     <body>
+        <form action="/authenticate" method="post">
+            <input type="password" name="password" id="password">
+            <input type="submit" value="Sign in">
+        </form>
         <ul>
             <% albums.each do |album| %>
                 <li><a href="<%= album.url %>">
