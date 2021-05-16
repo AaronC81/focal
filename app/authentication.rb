@@ -14,7 +14,7 @@ module Focal
 
     def load_password_hash
       if File.exist?(authentication_path)
-        File.read(authentication_path)
+        File.read(authentication_path).strip
       else
         nil
       end
