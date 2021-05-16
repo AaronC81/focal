@@ -2,20 +2,34 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nanogallery2/3.0.5/css/nanogallery2.min.css" integrity="sha512-6sOT9zKSKq1CYgNMqtcY84tFPDnG1yX5mxwdGQiAVpAomVr2kUKJ//pFeU/KfaZDVCOru5iFOVswpT4RWWF2dQ==" crossorigin="anonymous" />
+        <link rel="stylesheet" href="/style.css">
     </head>
     <body>
-        <p>
-            <% if include_archived %>
-                <a href="<%= album.url %>">Don't include archived images</a>
-            <% else %>
-                <a href="<%= album.url %>?archived=true">Include archived images</a>
-            <% end %>
-        </p>
+        <div id="header">
+            <a href="/">&lt; Albums</a>
+            <h1><%= album.name %></h1>
+        </div>
 
         <button onclick="archiveSelection()">Archive selection</button>
         <button onclick="unarchiveSelection()">Unarchive selection</button>
 
         <div id="gallery"></div>
+        
+        <% if archived_image_count > 0 %>
+            <div class="pane">
+                <% if include_archived %>
+                    <p>
+                        <%= archived_image_count %> archived images are being shown.
+                        <a href="<%= album.url %>">Hide archived images</a>
+                    </p>
+                <% else %>
+                    <p>
+                        <%= archived_image_count %> images are archived and not currently shown.
+                        <a href="<%= album.url %>?archived=true">Include archived images</a>
+                    </p>
+                <% end %>
+            </div>
+        <% end %>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/nanogallery2/3.0.5/jquery.nanogallery2.min.js" integrity="sha512-tvpLVnZrWnnNzV2921XEMx4xkFTUF8xg3s+Mi6cvC/R7A6X1FkpBUXPJFa3Xh5uD9BvOZ2tHeYq/5ZqrweW86Q==" crossorigin="anonymous"></script>

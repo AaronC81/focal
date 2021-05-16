@@ -79,10 +79,13 @@ module Focal
 
       include_archived = !!params['archived']
 
+      archived_image_count = album.images(include_archived: true).select(&:archived?).length
+
       erb :album, locals: {
         include_archived: include_archived,
         album: album,
-        images: album.images(include_archived: include_archived)
+        images: album.images(include_archived: include_archived),
+        archived_image_count: archived_image_count,
       }
     end
 
