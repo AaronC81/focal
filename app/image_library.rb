@@ -28,6 +28,14 @@ module Focal
       def url
         "/album/#{CGI.escape(name)}"
       end
+
+      def thumbnail_path
+        File.join(path, THUMBNAIL_DIR_NAME)
+      end
+  
+      def ensure_thumbnail_dir_exists
+        FileUtils.mkdir_p(thumbnail_path)
+      end
     end
 
     Image = Struct.new('Image', :album, :name, :archived) do
@@ -56,15 +64,8 @@ module Focal
         "/img/#{CGI.escape(album.name)}/#{CGI.escape(name)}"
       end
 
-      def thumbnail_id
-        # The thumbnail ID is always based on the path if the image isn't
-        # archived, so we don't generate the thumbnail again if the image is
-        # archived
-        Digest::SHA2.hexdigest(path_if_not_archived)
-      end
-
       def thumbnail_path
-        File.join(album.image_library.thumbnail_path, "#{thumbnail_id}.jpg")
+        File.join(album.thumbnail_path, name)
       end
 
       def thumbnail_generated?
@@ -72,7 +73,7 @@ module Focal
       end
 
       def generate_thumbnail
-        album.image_library.ensure_thumbnail_dir_exists
+        album.ensure_thumbnail_dir_exists
 
         rmagick_image = load_rmagick
         new_width = THUMBNAIL_WIDTH
@@ -137,14 +138,6 @@ module Focal
 
     def image_by_name(album, name)
       album.images(include_archived: true).find { |image| image.name == name }
-    end
-
-    def thumbnail_path
-      File.join(library_path, THUMBNAIL_DIR_NAME)
-    end
-
-    def ensure_thumbnail_dir_exists
-      FileUtils.mkdir_p(thumbnail_path)
     end
   end
 end
