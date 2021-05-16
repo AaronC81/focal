@@ -23,6 +23,7 @@
                     <% images.each do |image| %>
                         {
                             src: "<%= image.url %>",
+                            srct: "<%= image.thumbnail_url %>",
                         },
                     <% end %>
                 ],

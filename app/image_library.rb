@@ -64,6 +64,10 @@ module Focal
         "/img/#{CGI.escape(album.name)}/#{CGI.escape(name)}"
       end
 
+      def thumbnail_url
+        "/thumb/#{CGI.escape(album.name)}/#{CGI.escape(name)}"
+      end
+
       def thumbnail_path
         File.join(album.thumbnail_path, name)
       end
