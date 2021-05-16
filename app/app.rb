@@ -89,7 +89,7 @@ module Focal
     get '/' do
       albums = settings.image_library.albums
 
-      erb :index, locals: { albums: albums }
+      erb :index, locals: { albums: albums, authenticated: authenticated? }
     end
 
     post '/authenticate' do
@@ -99,6 +99,11 @@ module Focal
       else
         halt 401, "Incorrect password"
       end
+    end
+
+    post '/unauthenticate' do
+      session[:authenticated] = false
+      redirect '/'
     end
   end
 end
