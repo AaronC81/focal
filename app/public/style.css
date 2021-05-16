@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap');
+
+* {
+    font-family: 'Open Sans', sans-serif;
+}
+
 body, html {
     background-color: #272727;
     padding: 0 !important;
@@ -10,18 +16,26 @@ body, html {
     padding: 10px;
 }
 
-#header h1 {
+#header {
     line-height: normal;
     margin: 0;
     color: white;
 }
 
-li, a, p {
+li, a, p, h1, h2 {
     color: white;
 }
 
-p {
+h1, h2, p {
     margin: 0;
+}
+
+button, input[type="submit"] {
+    padding: 10px;
+    background-color: #474747;
+    border: 2px solid #2a2a2a;
+    border-radius: 10px;
+    color: white;
 }
 
 .pane {
@@ -31,4 +45,8 @@ p {
     background-color: #1f1f1f;
     border: 2px solid #363636;
     border-radius: 10px;
+}
+
+#manage-pane button {
+    margin-top: 10px;
 }

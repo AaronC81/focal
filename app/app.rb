@@ -86,6 +86,7 @@ module Focal
         album: album,
         images: album.images(include_archived: include_archived),
         archived_image_count: archived_image_count,
+        authenticated: authenticated?,
       }
     end
 
@@ -93,6 +94,10 @@ module Focal
       albums = settings.image_library.albums
 
       erb :index, locals: { albums: albums, authenticated: authenticated? }
+    end
+
+    get '/login' do
+      erb :login, locals: { authenticated: authenticated? }
     end
 
     post '/authenticate' do

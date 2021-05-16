@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="/style.css">
+    </head>
+    <body>
+        <div id="header">
+            <h1>Login</h1>
+        </div>
+
+        <% if authenticated %>
+            <div class="pane">
+                <p>You are already logged in!</p>
+            </div>
+        <% else %>
+            <div class="pane">
+                <form action="/authenticate" method="post">
+                    <input type="password" name="password" id="password">
+                    <input type="submit" value="Sign in">
+                </form>
+            </div>
+        <% end %>
+    </body>
+</html>

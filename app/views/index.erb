@@ -8,16 +8,6 @@
             <h1>Albums</h1>
         </div>
 
-        <% if authenticated %>
-            <form action="/unauthenticate" method="post">
-                <input type="submit" value="Sign out">
-            </form>
-        <% else %>
-            <form action="/authenticate" method="post">
-                <input type="password" name="password" id="password">
-                <input type="submit" value="Sign in">
-            </form>
-        <% end %>
         <ul>
             <% albums.each do |album| %>
                 <li><a href="<%= album.url %>">
@@ -25,5 +15,20 @@
                 </a></li>
             <% end %>
         </ul>
+
+        <div class="pane">
+            <% if authenticated %>
+                <p>
+                    You are logged in.
+                    <form action="/unauthenticate" method="post">
+                        <input type="submit" value="Log out">
+                    </form>
+                </p>
+            <% else %>
+                <p>
+                    <a href="/login">Log in</a> to upload and manage your photos.
+                </p>
+            <% end %>
+        </div>
     </body>
 </html>
