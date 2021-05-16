@@ -32,7 +32,7 @@ Library
 ## Usage
 
 **This isn't ready to use yet!** The core browsing functionality works, but it's
-totally unstyled, and you can't manage from the web yet.
+totally unstyled, and you can't manage much from the web yet.
 
 Still, if you'd like to run it:
 
@@ -41,7 +41,10 @@ Still, if you'd like to run it:
 2. `bundle install`
 3. Set the environment variable `FOCAL_IMAGE_LIBRARY` to a directory path which
    contains album directories
-4. `bundle exec rackup`
+4. At the root of your image library, create a file named `.FocalAuthentication`
+   and put a SHA256 hex-encoded password hash in there. (You can generate this
+   using `echo "desired-password" | ruby -e "require 'digest'; puts Digest::SHA2.hexdigest(gets.chomp)"`.)
+5. `bundle exec rackup`
 
 ## Testing
 
