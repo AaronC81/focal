@@ -99,4 +99,19 @@ RSpec.configure do |config|
 =end
 end
 
-TEST_LIBRARY_PATH = File.expand_path(File.join(__dir__, 'test_library'))
+TEST_LIBRARY_PATH = File.expand_path(File.join(__dir__, 'test_library')) 
+
+def create_test_copy
+  # Generate a dir under /tmp
+  random_path_part = 20.times.map { ('a'..'z').to_a.sample }.join
+  test_path = "/tmp/focal_test_#{random_path_part}"
+
+  # Copy the library contents there
+  FileUtils.cp_r(TEST_LIBRARY_PATH, test_path)
+
+  # Instantiate and return new library
+  new_library = Focal::ImageLibrary.new(test_path)
+  @library_test_copies ||= []
+  @library_test_copies << new_library
+  new_library
+end
