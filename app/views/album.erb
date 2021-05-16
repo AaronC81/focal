@@ -12,21 +12,86 @@
             <% end %>
         </p>
 
+        <button onclick="archiveSelection()">Archive selection</button>
+        <button onclick="unarchiveSelection()">Unarchive selection</button>
+
         <div id="gallery"></div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/nanogallery2/3.0.5/jquery.nanogallery2.min.js" integrity="sha512-tvpLVnZrWnnNzV2921XEMx4xkFTUF8xg3s+Mi6cvC/R7A6X1FkpBUXPJFa3Xh5uD9BvOZ2tHeYq/5ZqrweW86Q==" crossorigin="anonymous"></script>
 
         <script>
+            function getGalleryData() {
+                return $("#gallery").nanogallery2("data");
+            }
+
+            function getSelectedImages() {
+                return getGalleryData().items
+                    .filter(x => x.kind === "image")
+                    .filter(img => img.selected);
+            }
+
+            function unselectAll() {
+                return $("#gallery").nanogallery2("itemsSetSelectedValue",
+                    getSelectedImages());
+            }
+
+            async function archiveSelection() {
+                await Promise.all(getSelectedImages().map(async (img) => {
+                    await fetch(img.src + "/archive", {
+                        method: "POST",
+                    });
+                    img.customData.focal.archived = true;
+                    thumbnailInit(null, img, null);
+                }));
+                unselectAll();
+            }
+
+            async function unarchiveSelection() {
+                await Promise.all(getSelectedImages().map(async (img) => {
+                    await fetch(img.src + "/unarchive", {
+                        method: "POST",
+                    });
+                    img.customData.focal.archived = false;
+                    thumbnailInit(null, img, null);
+                }));
+                unselectAll();
+            }
+
+            function thumbnailInit(_, item, _) {
+                const archivedIndicator = item.$elt.find(".thumbnail-archived-indicator");
+                if (item.customData.focal.archived) {
+                    archivedIndicator.css("display", "block");
+                } else {
+                    archivedIndicator.css("display", "none");
+                }
+            }
+            
             $("#gallery").nanogallery2({
                 items: [
                     <% images.each do |image| %>
                         {
                             src: "<%= image.url %>",
                             srct: "<%= image.thumbnail_url %>",
+                            customData: {
+                                focal: {
+                                    archived: <%= image.archived? %>,
+                                },
+                            },
                         },
                     <% end %>
                 ],
+
+                thumbnailSelectable: true,
+                thumbnailHoverEffect2: null,
+                thumbnailToolbarImage: {
+                    topRight: "custom1",
+                },
+                icons: {
+                    thumbnailCustomTool1: "<b class=\"thumbnail-archived-indicator\">Archived</b>"
+                },
+
+                fnThumbnailInit: thumbnailInit,
             });
         </script>
     </body>
