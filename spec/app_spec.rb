@@ -35,6 +35,24 @@ RSpec.describe Focal::App do
       get '/img/../spec_helper.rb'
       expect(last_response.status).to eq 404
     end
+
+    context 'modification' do
+      it 'can archive images' do
+        post '/img/Library%20A/Geese1.jpg/archive'
+        expect(last_response.status).to eq 200
+
+        post '/img/Library%20A/Geese1.jpg/archive'
+        expect(last_response.status).to eq 204
+      end
+
+      it 'can unarchive images' do
+        post '/img/Library%20A/Geese3.jpg/unarchive'
+        expect(last_response.status).to eq 200
+
+        post '/img/Library%20A/Geese3.jpg/unarchive'
+        expect(last_response.status).to eq 204
+      end
+    end
   end
 
   context '/thumb endpoint' do
