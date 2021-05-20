@@ -35,15 +35,22 @@ RSpec.describe Focal::ImageLibrary do
     album = subject.album_by_name('Library A')
 
     expect(album.images).to match_array([
-      have_attributes(name: 'Geese1.jpg', archived: false),
-      have_attributes(name: 'Geese2.jpg', archived: false),
+      have_attributes(name: 'Geese1.jpg', archived: false, alternative_formats: ['.arw']),
+      have_attributes(name: 'Geese2.jpg', archived: false, alternative_formats: []),
     ])
 
     expect(album.images(include_archived: true)).to match_array([
-      have_attributes(name: 'Geese1.jpg', archived: false),
-      have_attributes(name: 'Geese2.jpg', archived: false),
-      have_attributes(name: 'Geese3.jpg', archived: true),
+      have_attributes(name: 'Geese1.jpg', archived: false, alternative_formats: ['.arw']),
+      have_attributes(name: 'Geese2.jpg', archived: false, alternative_formats: []),
+      have_attributes(name: 'Geese3.jpg', archived: true, alternative_formats: ['.ARW']),
     ])
+
+    expect(album.image_by_name("Geese1.jpg").alternative_format_details).to eq [{
+      path: "#{subject.library_path}/Library A/Geese1.arw",
+      url: "/img/Library+A/Geese1.arw",
+      format: ".arw",
+      description: "Sony Alpha Raw"
+    }]
   end
 
   it 'archives and unarchives images' do
@@ -53,13 +60,19 @@ RSpec.describe Focal::ImageLibrary do
     subject.album_by_name("Library B").image_by_name("Ducks1.jpg").archive
 
     expect(File.exist?(rel_path("Library A", "Archived", "Geese1.jpg"))).to eq true
+    expect(File.exist?(rel_path("Library A", "Archived", "Geese1.arw"))).to eq true
     expect(File.exist?(rel_path("Library A", "Geese1.jpg"))).to eq false
+    expect(File.exist?(rel_path("Library A", "Geese1.arw"))).to eq false
 
     expect(File.exist?(rel_path("Library A", "Archived", "Geese3.jpg"))).to eq false
+    expect(File.exist?(rel_path("Library A", "Archived", "Geese3.ARW"))).to eq false
     expect(File.exist?(rel_path("Library A", "Geese3.jpg"))).to eq true
+    expect(File.exist?(rel_path("Library A", "Geese3.ARW"))).to eq true
 
     expect(File.exist?(rel_path("Library B", "Archived", "Ducks1.jpg"))).to eq true
+    expect(File.exist?(rel_path("Library B", "Archived", "Ducks1.aRw"))).to eq true
     expect(File.exist?(rel_path("Library B", "Ducks1.jpg"))).to eq false
+    expect(File.exist?(rel_path("Library B", "Ducks1.aRw"))).to eq false
   end
 
   it 'generates thumbnails' do
