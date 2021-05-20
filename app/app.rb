@@ -40,6 +40,15 @@ module Focal
         send_file request_image.path
       end
 
+      get '/format/:format' do
+        img = request_image
+        format = params['format']
+
+        halt 404, 'Format not found' unless img.alternative_formats.include?(format)
+
+        send_file img.path(alternative_format: format)
+      end
+
       post '/archive' do
         authenticated!
 

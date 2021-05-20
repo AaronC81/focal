@@ -26,8 +26,23 @@ RSpec.describe Focal::App do
       expect(last_response.length).to be > 0
     end
 
+    it 'returns alternative formats for images' do
+      get '/img/Library%20A/Geese1.jpg/format/.arw'
+      expect(last_response).to be_ok
+      # Rack might add the MIME for Sony Alpha Raw at some point, so just test
+      # that we aren't assuming everything's a JPEG
+      # (Currently it's sent as an octet stream)
+      expect(last_response.content_type).not_to eq 'image/jpeg'
+      expect(last_response.length).to be > 0
+    end
+
     it '404s on missing images' do
       get '/img/Library%20A/Geese4.jpg'
+      expect(last_response.status).to eq 404
+    end
+
+    it '404s on missing formats' do
+      get '/img/Library%20A/Geese1.jpg/format/.png'
       expect(last_response.status).to eq 404
     end
 
