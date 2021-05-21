@@ -96,11 +96,15 @@
             function toolbarClick(name, _, item) {
                 // Download RAW
                 if (name === "custom1") {
-                    formatButtons = item.customData.focal.alternativeFormats.map(fmt =>
-                        `<a href=${fmt.url}>
-                            <button class=\"width-100\">${fmt.description}</button>
-                        </a>`
-                    ).join("");
+                    alternativeFormats = item.customData.focal.alternativeFormats;
+                    formatButtons =
+                        alternativeFormats.length == 0
+                        ? "<p>No alternative formats available for this image.</p>"
+                        : alternativeFormats.map(fmt =>
+                            `<a href=${fmt.url}>
+                                <button class=\"width-100\">${fmt.description}</button>
+                            </a>`
+                        ).join("");
                     picoModal("<h2>Other Formats</h2>" + formatButtons).show();
                 }
             }
