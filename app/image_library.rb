@@ -90,7 +90,7 @@ module Focal
 
       def url(alternative_format: nil)
         if alternative_format
-          "/img/#{CGI.escape(album.name)}/#{CGI.escape(name_format(alternative_format))}"
+          "/img/#{CGI.escape(album.name)}/#{CGI.escape(name)}/format/#{CGI.escape(alternative_format)}"
         else
           "/img/#{CGI.escape(album.name)}/#{CGI.escape(name)}"
         end

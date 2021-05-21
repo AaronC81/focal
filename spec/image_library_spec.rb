@@ -47,7 +47,7 @@ RSpec.describe Focal::ImageLibrary do
 
     expect(album.image_by_name("Geese1.jpg").alternative_format_details).to eq [{
       path: "#{subject.library_path}/Library A/Geese1.arw",
-      url: "/img/Library+A/Geese1.arw",
+      url: "/img/Library+A/Geese1.jpg/format/.arw",
       format: ".arw",
       description: "Sony Alpha Raw"
     }]
