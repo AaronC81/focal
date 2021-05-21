@@ -46,6 +46,11 @@ module Focal
 
         halt 404, 'Format not found' unless img.alternative_formats.include?(format)
 
+        # We don't want the downloaded file to be called ".raw" or whatever
+        # This will recommend a proper name like "DSC00001.raw" to the browser
+        filename = File.basename(img.path(alternative_format: format))
+        response['Content-Disposition'] = "attachment; filename=\"#{filename}\""
+
         send_file img.path(alternative_format: format)
       end
 
