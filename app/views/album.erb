@@ -36,10 +36,11 @@
             </div>
         <% end %>
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/picomodal/3.0.0/picoModal.min.js" integrity="sha512-bCd+wlawQOsxutqlrFLgATxcGnQcb2PQ/Og8DtTcLzJVssqgSk3Ro0qUuOKF3fgZwee622W/i91fGYrd32zFpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/nanogallery2/3.0.5/jquery.nanogallery2.min.js" integrity="sha512-tvpLVnZrWnnNzV2921XEMx4xkFTUF8xg3s+Mi6cvC/R7A6X1FkpBUXPJFa3Xh5uD9BvOZ2tHeYq/5ZqrweW86Q==" crossorigin="anonymous"></script>
-
-        <script>
+        
+        <script>            
             function getGalleryData() {
                 return $("#gallery").nanogallery2("data");
             }
@@ -91,6 +92,18 @@
                     archivedIndicator.css("display", "none");
                 }
             }
+
+            function toolbarClick(name, _, item) {
+                // Download RAW
+                if (name === "custom1") {
+                    formatButtons = item.customData.focal.alternativeFormats.map(fmt =>
+                        `<a href=${fmt.url}>
+                            <button class=\"width-100\">${fmt.description}</button>
+                        </a>`
+                    ).join("");
+                    picoModal("<h2>Other Formats</h2>" + formatButtons).show();
+                }
+            }
             
             $("#gallery").nanogallery2({
                 items: [
@@ -101,6 +114,7 @@
                             customData: {
                                 focal: {
                                     archived: <%= image.archived? %>,
+                                    alternativeFormats: <%= image.alternative_format_details.to_json %>,
                                 },
                             },
                         },
@@ -112,11 +126,16 @@
                 thumbnailToolbarImage: {
                     topRight: "custom1",
                 },
+                viewerTools: {
+                    topRight: "custom1, zoomButton, closeButton",
+                },
                 icons: {
-                    thumbnailCustomTool1: "<b class=\"thumbnail-archived-indicator\">Archived</b>"
+                    thumbnailCustomTool1: "<b class=\"thumbnail-archived-indicator\">Archived</b>",
+                    viewerCustomTool1: "<b data-micromodal-trigger=\"modal-formats\">Other Formats</b>",
                 },
 
                 fnThumbnailInit: thumbnailInit,
+                fnImgToolbarCustClick: toolbarClick,
             });
         </script>
     </body>

@@ -50,3 +50,15 @@ button, input[type="submit"] {
 #manage-pane button {
     margin-top: 10px;
 }
+
+.pico-content {
+    background-color: #272727 !important;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+a button {
+    cursor: pointer;
+}
