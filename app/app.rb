@@ -84,10 +84,18 @@ module Focal
       end
     end
 
-    get '/cover/:album' do
-      album = request_album
-      album.ensure_cover_generated
-      send_file album.cover_path
+    namespace '/cover/:album' do
+      get do
+        album = request_album
+        album.ensure_cover_generated
+        send_file album.cover_path
+      end
+
+      post '/regenerate' do
+        authenticated!
+
+        request_album.generate_cover
+      end
     end
 
     get '/thumb/:album/:image' do

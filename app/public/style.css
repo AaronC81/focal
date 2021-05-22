@@ -36,6 +36,13 @@ button, input[type="submit"] {
     border: 2px solid #2a2a2a;
     border-radius: 10px;
     color: white;
+    cursor: pointer;
+}
+
+button:disabled, input[type="submit"]:disabled {
+    background-color: #2e2e2e;
+    color: #7e7e7e;
+    cursor: none;
 }
 
 .pane {
