@@ -58,6 +58,9 @@ module Focal
       def generate_cover
         ensure_thumbnail_dir_exists
 
+        # TOOD: Use some kind of placeholder image
+        return if images.empty?
+
         # Pick a set of random images and load them with RMagick
         images_for_cover = 6.times.map { images.sample.load_rmagick }
 
