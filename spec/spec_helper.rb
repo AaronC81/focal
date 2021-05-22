@@ -112,7 +112,7 @@ def create_test_copy
 
   # Instantiate and return new library
   new_library = Focal::ImageLibrary.new(test_path)
-  @library_test_copies ||= []
-  @library_test_copies << new_library
+  $library_test_copies ||= []
+  $library_test_copies << new_library
   new_library
 end

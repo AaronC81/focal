@@ -1,12 +1,14 @@
 require 'fileutils'
 require 'digest'
 require 'rmagick'
+require 'tmpdir'
 
 module Focal
   class ImageLibrary
     ARCHIVED_DIR_NAME = 'Archived'
     THUMBNAIL_DIR_NAME = '.FocalThumbs'
     THUMBNAIL_WIDTH = 300
+    ALBUM_COVER_NAME = '__FocalAlbumCover.jpg'
 
     PRIMARY_FORMATS = {
       ".jpg" => "JPEG",
@@ -40,13 +42,61 @@ module Focal
       def thumbnail_path
         File.join(path, THUMBNAIL_DIR_NAME)
       end
-  
+
       def ensure_thumbnail_dir_exists
         FileUtils.mkdir_p(thumbnail_path)
       end
-
+      
       def clear_thumbnails
         FileUtils.rm_rf(thumbnail_path)
+      end
+
+      def cover_path
+        File.join(thumbnail_path, ALBUM_COVER_NAME)
+      end
+
+      def generate_cover
+        ensure_thumbnail_dir_exists
+
+        # Pick a set of random images and load them with RMagick
+        images_for_cover = 6.times.map { images.sample.load_rmagick }
+
+        # Crop each image into a square
+        images_for_cover.each do |img|
+          narrow_edge = img.columns > img.rows ? img.rows : img.columns
+          img.crop!(Magick::CenterGravity, narrow_edge, narrow_edge)
+          img.resize!(200, 200)        
+        end
+
+        # Create a new temporary directory
+        tempdir = Dir.mktmpdir("FocalCover") do |dir|
+          # Save them all as files in the temporary directory
+          files = images_for_cover.map.with_index do |img, i|
+            path = File.join(dir, "image#{i}.jpg")
+            img.write(path)
+            path
+          end
+
+          # Create an ImageList
+          image_list = Magick::ImageList.new(*files)
+
+          # Produce a 3x2 montage of images
+          cover = image_list.montage do
+            self.geometry = "200x200+5+5"
+            self.tile = "3x2"
+          end[0]
+
+          # Save it as the cover image
+          cover.write(cover_path)
+        end
+      end
+
+      def cover_generated?
+        File.exist?(cover_path)
+      end
+
+      def ensure_cover_generated
+        generate_cover unless cover_generated?
       end
     end
 

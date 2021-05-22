@@ -15,16 +15,16 @@ RSpec.describe Focal::ImageLibrary do
   end
 
   after :each do
-    @library_test_copies.each do |copy|
+    $library_test_copies.each do |copy|
       # Sanity check! Let's not nuke any systems
       raise 'unusual library test copy path' \
         unless copy.library_path.start_with?('/tmp/')
 
       # Remove the test library
       FileUtils.rm_rf(copy.library_path)
-    end if @library_test_copies&.any? && !ENV['FOCAL_KEEP_LIBRARY_TEST_COPIES']
+    end if $library_test_copies&.any? && !ENV['FOCAL_KEEP_LIBRARY_TEST_COPIES']
 
-    @library_test_copies = []
+    $library_test_copies = []
   end
 
   it 'loads albums' do
@@ -94,5 +94,15 @@ RSpec.describe Focal::ImageLibrary do
 
     subject.album_by_name("Library A").clear_thumbnails
     expect(img.thumbnail_generated?).to eq false
+  end
+
+  it 'generates covers' do
+    album = subject.album_by_name("Library A")
+    
+    expect(album.cover_generated?).to eq false
+    album.generate_cover
+    expect(album.cover_generated?).to eq true
+
+    expect(File.exist?(album.cover_path)).to eq true
   end
 end
