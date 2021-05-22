@@ -8,7 +8,7 @@ module Focal
     ARCHIVED_DIR_NAME = 'Archived'
     THUMBNAIL_DIR_NAME = '.FocalThumbs'
     THUMBNAIL_WIDTH = 300
-    ALBUM_COVER_NAME = '__FocalAlbumCover.jpg'
+    ALBUM_COVER_NAME = '__FocalAlbumCover.png'
 
     PRIMARY_FORMATS = {
       ".jpg" => "JPEG",
