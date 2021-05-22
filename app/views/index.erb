@@ -8,13 +8,18 @@
             <h1>Albums</h1>
         </div>
 
-        <ul>
+        <div id="album-list">
             <% albums.each do |album| %>
-                <li><a href="<%= album.url %>">
-                    <%= album.name %>
-                </a></li>
+                <a href="<%= album.url %>">
+                    <div class="album-list-item">
+                        <img class="album-list-item-cover" src="<%= album.cover_url %>" />
+                        <div class="album-list-item-title">
+                            <%= album.name %>
+                        </div>
+                    </div>
+                </a>
             <% end %>
-        </ul>
+        </div>
 
         <div class="pane">
             <% if authenticated %>

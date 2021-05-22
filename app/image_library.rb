@@ -55,6 +55,10 @@ module Focal
         File.join(thumbnail_path, ALBUM_COVER_NAME)
       end
 
+      def cover_url
+        "/cover/#{CGI.escape(name)}"
+      end
+
       def generate_cover
         ensure_thumbnail_dir_exists
 
