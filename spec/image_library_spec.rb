@@ -105,4 +105,46 @@ RSpec.describe Focal::ImageLibrary do
 
     expect(File.exist?(album.cover_path)).to eq true
   end
+
+  context 'settings' do
+    it 'can be loaded' do
+      expect(subject.album_by_name("Library A").settings).to eq({
+        "album_visibility" => "public",
+        "album_archive_visibility" => "public",
+      })
+
+      expect(subject.album_by_name("Library B").settings).to eq({
+        "album_visibility" => "public",
+        "album_archive_visibility" => Focal::ImageLibrary::ALBUM_SETTINGS_DEFAULTS["album_archive_visibility"],
+      })
+    end
+
+    it 'can be changed' do
+      album = subject.album_by_name("Library A")
+      album.save_setting("album_visibility", "private")
+
+      expect(album.settings).to eq({
+        "album_visibility" => "private",
+        "album_archive_visibility" => "public",
+      })
+    end
+
+    it 'can be loaded and changed using accessor methods' do
+      album = subject.album_by_name("Library A")
+
+      expect(album.settings).to eq({
+        "album_visibility" => "public",
+        "album_archive_visibility" => "public",
+      })
+      expect(album.album_visibility).to eq "public"
+
+      album.album_visibility = "private"
+
+      expect(album.settings).to eq({
+        "album_visibility" => "private",
+        "album_archive_visibility" => "public",
+      })
+      expect(album.album_visibility).to eq "private"
+    end
+  end
 end

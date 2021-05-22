@@ -2,6 +2,7 @@ require 'fileutils'
 require 'digest'
 require 'rmagick'
 require 'tmpdir'
+require 'yaml'
 
 module Focal
   class ImageLibrary
@@ -9,6 +10,7 @@ module Focal
     THUMBNAIL_DIR_NAME = '.FocalThumbs'
     THUMBNAIL_WIDTH = 300
     ALBUM_COVER_NAME = '__FocalAlbumCover.png'
+    ALBUM_SETTINGS_NAME = ".Focal"
 
     PRIMARY_FORMATS = {
       ".jpg" => "JPEG",
@@ -18,10 +20,48 @@ module Focal
       ".arw" => "Sony Alpha Raw"
     }
 
+    ALBUM_SETTINGS_DEFAULTS = {
+      "album_visibility" => "private",
+      "album_archive_visibility" => "private",
+    }
+
     Album = Struct.new('Album', :image_library, :name) do
       def path
         File.join(image_library.library_path, name)
       end
+
+      def settings_path
+        File.join(path, ALBUM_SETTINGS_NAME)
+      end
+
+      def settings
+        if File.exist?(settings_path)
+          file_contents = YAML.load_file(settings_path)
+        else
+          file_contents = {}
+        end
+
+        ALBUM_SETTINGS_DEFAULTS.merge(file_contents)
+      end
+
+      def save_setting(key, value)
+        file_contents = YAML.load_file(settings_path)
+        file_contents[key] = value
+        File.write(settings_path, YAML.dump(file_contents))
+      end
+
+      def self.setting_accessor(name)
+        define_method(name.to_sym) do
+          settings[name]
+        end
+
+        define_method("#{name}=".to_sym) do |value|
+          save_setting(name, value)
+        end
+      end
+
+      setting_accessor "album_visibility"
+      setting_accessor "album_archive_visibility"
 
       def images(include_archived: false)
         image_library.album_images(self, include_archived: include_archived)
