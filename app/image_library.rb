@@ -50,18 +50,19 @@ module Focal
         File.write(settings_path, YAML.dump(file_contents))
       end
 
-      def self.setting_accessor(name)
+      def self.setting_accessor(name, values = nil)
         define_method(name.to_sym) do
           settings[name]
         end
 
         define_method("#{name}=".to_sym) do |value|
+          raise "invalid value #{value} for setting #{name}" if values && !values.include?(value)
           save_setting(name, value)
         end
       end
 
-      setting_accessor "album_visibility"
-      setting_accessor "album_archive_visibility"
+      setting_accessor "album_visibility", ["public", "private"]
+      setting_accessor "album_archive_visibility", ["public", "private"]
 
       def images(include_archived: false)
         image_library.album_images(self, include_archived: include_archived)

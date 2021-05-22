@@ -17,6 +17,22 @@
                 <button onclick="unarchiveSelection()">Unarchive selection</button>
                 <br>
                 <button id="regenerate-album-cover" onclick="regenerateCover()">Regenerate album cover</button>
+                <hr>
+                <p>
+                    Who can view this album?
+                    <select id="album-visibility-select">
+                        <option value="public"  <%= album.album_visibility == "public"  ? "selected" : "" %>>Anyone</option>
+                        <option value="private" <%= album.album_visibility == "private" ? "selected" : "" %>>Only me</option>
+                    </select>
+                </p>
+                <p>
+                    Who can view this album's archived photos?
+                    <select id="album-archive-visibility-select">
+                        <option value="public"  <%= album.album_archive_visibility == "public"  ? "selected" : "" %>>Anyone who can view the album</option>
+                        <option value="private" <%= album.album_archive_visibility == "private" ? "selected" : "" %>>Only me</option>
+                    </select>
+                </p>
+                <button id="save-visibility-settings" onclick="saveVisibilitySettings()">Save visibility settings</button>
             </div>
         <% end %>
 
@@ -94,6 +110,27 @@
                     });
                 } finally {
                     $("#regenerate-album-cover").prop("disabled", false);
+                }
+            }
+
+            async function saveVisibilitySettings() {
+                $("#save-visibility-settings").prop("disabled", true);
+                try {
+                    const albumVisibility = $("#album-visibility-select").val();
+                    const albumArchiveVisibility = $("#album-archive-visibility-select").val();
+                    const body =
+                        `album_visibility=${albumVisibility}&` +
+                        `album_archive_visibility=${albumArchiveVisibility}`;
+                    
+                    await fetch("<%= album.url %>/visibility", {
+                        method: "POST",
+                        body: body,
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                    });
+                } finally {
+                    $("#save-visibility-settings").prop("disabled", false);
                 }
             }
 

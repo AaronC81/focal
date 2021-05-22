@@ -104,23 +104,30 @@ module Focal
       send_file image.thumbnail_path
     end
 
-    get '/album/:name' do
-      album_name = CGI.unescape(params['name'])
+    namespace '/album/:album' do
+      get do
+        album = request_album
 
-      album = settings.image_library.album_by_name(album_name)
-      halt 404, 'Album not found' if album.nil?
+        include_archived = !!params['archived']
 
-      include_archived = !!params['archived']
+        archived_image_count = album.images(include_archived: true).select(&:archived?).length
 
-      archived_image_count = album.images(include_archived: true).select(&:archived?).length
+        erb :album, locals: {
+          include_archived: include_archived,
+          album: album,
+          images: album.images(include_archived: include_archived),
+          archived_image_count: archived_image_count,
+          authenticated: authenticated?,
+        }
+      end
 
-      erb :album, locals: {
-        include_archived: include_archived,
-        album: album,
-        images: album.images(include_archived: include_archived),
-        archived_image_count: archived_image_count,
-        authenticated: authenticated?,
-      }
+      post '/visibility' do
+        authenticated!
+
+        album = request_album
+        (album.album_visibility = params["album_visibility"]) rescue (halt 400)
+        (album.album_archive_visibility = params["album_archive_visibility"]) rescue (halt 400)
+      end
     end
 
     get '/' do

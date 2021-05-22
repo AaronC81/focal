@@ -101,4 +101,34 @@ RSpec.describe Focal::App do
       expect(last_response.length).to be > 0
     end
   end
+
+  context '/album endpoint' do
+    context '/visibility endpoint' do
+      it 'requires authentication' do
+        post '/album/Library+A/visibility', {
+          "album_visibility" => "public",
+          "album_archive_visibility" => "private",
+        }
+        expect(last_response).not_to be_ok
+      end
+
+      it 'allows setting valid visibility' do
+        authenticate
+        post '/album/Library+A/visibility', {
+          "album_visibility" => "public",
+          "album_archive_visibility" => "private",
+        }
+        expect(last_response).to be_ok
+      end
+
+      it 'rejects invalid visibility' do
+        authenticate
+        post '/album/Library+A/visibility', {
+          "album_visibility" => "invalid",
+          "album_archive_visibility" => "private",
+        }
+        expect(last_response.status).to eq 400
+      end
+    end
+  end
 end
