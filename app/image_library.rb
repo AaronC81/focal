@@ -84,6 +84,7 @@ module Focal
           cover = image_list.montage do
             self.geometry = "200x200+5+5"
             self.tile = "3x2"
+            self.background_color = "none"
           end[0]
 
           # Save it as the cover image
