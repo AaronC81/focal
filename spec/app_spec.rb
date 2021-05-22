@@ -92,4 +92,13 @@ RSpec.describe Focal::App do
       expect(last_response.length).to be > 0
     end
   end
+
+  context '/cover endpoint' do
+    it 'returns valid covers' do
+      get '/cover/Library%20A'
+      expect(last_response).to be_ok
+      expect(last_response.content_type).to eq 'image/jpeg'
+      expect(last_response.length).to be > 0
+    end
+  end
 end

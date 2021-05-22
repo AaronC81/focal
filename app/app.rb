@@ -23,16 +23,21 @@ module Focal
     end
 
     def request_image
-      album_name = CGI.unescape(params['album'])
       image_name = CGI.unescape(params['image'])
 
-      album = settings.image_library.album_by_name(album_name)
-      halt 404, 'Album not found' if album.nil?
-
-      image = album.image_by_name(image_name)
+      image = request_album.image_by_name(image_name)
       halt 404, 'Image not found' if image.nil?
       
       image
+    end
+
+    def request_album
+      album_name = CGI.unescape(params['album'])
+
+      album = settings.image_library.album_by_name(album_name)
+      halt 404, 'Album not found' if album.nil?
+      
+      album
     end
     
     namespace '/img/:album/:image' do
@@ -77,6 +82,12 @@ module Focal
           status 204
         end
       end
+    end
+
+    get '/cover/:album' do
+      album = request_album
+      album.ensure_cover_generated
+      send_file album.cover_path
     end
 
     get '/thumb/:album/:image' do
