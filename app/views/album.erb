@@ -38,7 +38,7 @@
 
         <div id="gallery"></div>
         
-        <% if archived_image_count > 0 %>
+        <% if archived_image_count > 0 && has_access_to_archived %>
             <div class="pane">
                 <% if include_archived %>
                     <p>

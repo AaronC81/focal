@@ -27,6 +27,9 @@ module Focal
 
       image = request_album.image_by_name(image_name)
       halt 404, 'Image not found' if image.nil?
+
+      halt 401 if request_album.album_archive_visibility != "public" \
+        && image.archived? && !authenticated?
       
       image
     end
@@ -36,6 +39,8 @@ module Focal
 
       album = settings.image_library.album_by_name(album_name)
       halt 404, 'Album not found' if album.nil?
+
+      halt 401 if album.album_visibility != "public" && !authenticated?
       
       album
     end
@@ -108,7 +113,10 @@ module Focal
       get do
         album = request_album
 
+        has_access_to_archived = !(album.album_archive_visibility != "public" \
+          && !authenticated?)
         include_archived = !!params['archived']
+        halt 401 if include_archived && !has_access_to_archived
 
         archived_image_count = album.images(include_archived: true).select(&:archived?).length
 
@@ -117,6 +125,7 @@ module Focal
           album: album,
           images: album.images(include_archived: include_archived),
           archived_image_count: archived_image_count,
+          has_access_to_archived: has_access_to_archived,
           authenticated: authenticated?,
         }
       end
@@ -131,7 +140,9 @@ module Focal
     end
 
     get '/' do
-      albums = settings.image_library.albums
+      albums = settings.image_library.albums.reject do |album|
+        album.album_visibility != "public" && !authenticated?
+      end
 
       erb :index, locals: { albums: albums, authenticated: authenticated? }
     end
