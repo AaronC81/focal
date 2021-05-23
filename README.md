@@ -59,9 +59,9 @@ Still, if you'd like to run it:
    using `echo "desired-password" | ruby -e "require 'digest'; puts Digest::SHA2.hexdigest(gets.chomp)"`.)
 5. `bundle exec rackup`
 
-There's also a Dockerfile is also available if that's more your thing. You'll
-need to run the container with `FOCAL_IMAGE_LIBRARY` set, probably to some
-volume mapped to the host machine, e.g.:
+There's also a Dockerfile available if that's more your thing. You'll need to
+run the container with `FOCAL_IMAGE_LIBRARY` set, probably to some volume mapped
+to the host machine, e.g.:
 
 ```shell
 docker run --env "FOCAL_IMAGE_LIBRARY=/images" -v ~/pictures/focal-library:/images -p 9292:9292 focal
