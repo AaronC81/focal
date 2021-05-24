@@ -3,6 +3,7 @@ require 'digest'
 require 'rmagick'
 require 'tmpdir'
 require 'yaml'
+require_relative 'epeg'
 
 module Focal
   class ImageLibrary
@@ -214,12 +215,7 @@ module Focal
       def generate_thumbnail
         album.ensure_thumbnail_dir_exists
 
-        rmagick_image = load_rmagick
-        new_width = THUMBNAIL_WIDTH
-        new_height = rmagick_image.y_resolution.to_i / (rmagick_image.x_resolution.to_i / new_width)
-
-        rmagick_thumbnail = rmagick_image.thumbnail(new_width, new_height)
-        rmagick_thumbnail.write(thumbnail_path)
+        EPEG.create_thumbnail(path, thumbnail_path, width: THUMBNAIL_WIDTH, preserve: true)
       end
 
       def ensure_thumbnail_generated

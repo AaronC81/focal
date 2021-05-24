@@ -49,15 +49,16 @@ have not been rigorously tested.
 
 Still, if you'd like to run it:
 
-1. You'll need a relatively modern Ruby (I'm using 3.0, but later versions of
+1. Build and install [EPEG](https://github.com/mattes/epeg)
+2. You'll need a relatively modern Ruby (I'm using 3.0, but later versions of
    2.x should be fine)
-2. `bundle install`
-3. Set the environment variable `FOCAL_IMAGE_LIBRARY` to a directory path which
+3. `bundle install`
+4. Set the environment variable `FOCAL_IMAGE_LIBRARY` to a directory path which
    contains album directories
-4. At the root of your image library, create a file named `.FocalAuthentication`
+5. At the root of your image library, create a file named `.FocalAuthentication`
    and put a SHA256 hex-encoded password hash in there. (You can generate this
    using `echo "desired-password" | ruby -e "require 'digest'; puts Digest::SHA2.hexdigest(gets.chomp)"`.)
-5. `bundle exec rackup`
+6. `bundle exec rackup`
 
 There's also a Dockerfile available if that's more your thing. You'll need to
 run the container with `FOCAL_IMAGE_LIBRARY` set, probably to some volume mapped

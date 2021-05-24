@@ -1,5 +1,14 @@
 FROM ruby:3.0
+
 RUN apt update && apt install imagemagick -y
+
+WORKDIR /tmp
+RUN git clone https://github.com/mattes/epeg.git
+RUN cd epeg && ./autogen.sh && make && make install
+
+# This is where "make install" puts libepeg.so.0
+ENV LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH}"
+
 WORKDIR /app
 COPY . .
 RUN bundle install
