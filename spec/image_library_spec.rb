@@ -146,5 +146,13 @@ RSpec.describe Focal::ImageLibrary do
       })
       expect(album.album_visibility).to eq "private"
     end
+
+    it 'can create a settings file when one doesn\'t exist' do
+      FileUtils.mkdir(rel_path("Library C"))
+
+      album = subject.album_by_name("Library C")
+      album.album_visibility = "public"
+      expect(album.album_visibility).to eq "public"
+    end
   end
 end

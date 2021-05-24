@@ -35,18 +35,22 @@ module Focal
         File.join(path, ALBUM_SETTINGS_NAME)
       end
 
-      def settings
+      def settings(include_defaults: true)
         if File.exist?(settings_path)
           file_contents = YAML.load_file(settings_path)
         else
           file_contents = {}
         end
 
-        ALBUM_SETTINGS_DEFAULTS.merge(file_contents)
+        if include_defaults
+          ALBUM_SETTINGS_DEFAULTS.merge(file_contents)
+        else
+          file_contents
+        end
       end
 
       def save_setting(key, value)
-        file_contents = YAML.load_file(settings_path)
+        file_contents = settings(include_defaults: false)
         file_contents[key] = value
         File.write(settings_path, YAML.dump(file_contents))
       end
