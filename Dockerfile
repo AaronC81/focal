@@ -14,4 +14,4 @@ COPY . .
 RUN bundle install
 # The default installation of ImageMagick will run out of resources when trying to generate thumbnails
 RUN sed -i -E 's/name="disk" value=".+"/name="disk" value="8GiB"/g' /etc/ImageMagick-6/policy.xml
-CMD bundle exec rackup
+CMD bundle exec rackup -E production --host 0.0.0.0 -p 9292
