@@ -106,6 +106,13 @@ RSpec.describe Focal::ImageLibrary do
     expect(File.exist?(album.cover_path)).to eq true
   end
 
+  it 'can calculate image sizes' do
+    img = subject.album_by_name("Library A").image_by_name("Geese1.jpg")
+
+    expect(img.size).to eq [6000, 4000]
+    expect(img.thumbnail_size).to eq [300, 200]
+  end
+
   context 'settings' do
     it 'can be loaded' do
       expect(subject.album_by_name("Library A").settings).to eq({

@@ -3,6 +3,7 @@ require 'digest'
 require 'rmagick'
 require 'tmpdir'
 require 'yaml'
+require 'fastimage'
 require_relative 'epeg'
 
 module Focal
@@ -224,6 +225,18 @@ module Focal
 
       def ensure_thumbnail_generated
         generate_thumbnail unless thumbnail_generated?
+      end
+
+      def size
+        FastImage.size(path)
+      end
+
+      def thumbnail_size
+        original_width, original_height = size
+        [
+          THUMBNAIL_WIDTH,
+          ((THUMBNAIL_WIDTH.to_f / original_width) * original_height).to_i
+        ]
       end
 
       def load_rmagick

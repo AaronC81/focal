@@ -4,6 +4,7 @@ gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'puma'
 gem 'rmagick'
+gem 'fastimage'
 
 group :development do
   gem 'rspec'

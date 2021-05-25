@@ -162,9 +162,15 @@
             $("#gallery").nanogallery2({
                 items: [
                     <% images.each do |image| %>
+                        <% width, height = image.size %>
+                        <% twidth, theight = image.thumbnail_size %>
                         {
                             src: "<%= image.url %>",
                             srct: "<%= image.thumbnail_url %>",
+                            width: <%= width %>,
+                            height: <%= height %>,
+                            twidth: <%= twidth %>,
+                            theight: <%= theight %>,
                             customData: {
                                 focal: {
                                     archived: <%= image.archived? %>,
