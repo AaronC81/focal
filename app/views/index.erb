@@ -14,7 +14,7 @@
                     <div class="album-list-item">
                         <img class="album-list-item-cover" src="<%= album.cover_url %>" />
                         <div class="album-list-item-title">
-                            <%= album.name %>
+                            <%= "🔒 " if album.private? %><%= album.name %>
                         </div>
                     </div>
                 </a>
