@@ -113,7 +113,7 @@ module Focal
         return if images.empty?
 
         # Pick a set of random images and load them with RMagick
-        images_for_cover = 6.times.map { images.sample.load_rmagick }
+        images_for_cover = 6.times.map { images.sample.load_rmagick_thumbnail }
 
         # Crop each image into a square
         images_for_cover.each do |img|
@@ -241,6 +241,11 @@ module Focal
 
       def load_rmagick
         Magick::Image.read(path).first
+      end
+
+      def load_rmagick_thumbnail
+        ensure_thumbnail_generated
+        Magick::Image.read(thumbnail_path).first
       end
 
       def alternative_format_details
