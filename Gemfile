@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'sinatra'
 gem 'sinatra-contrib'
-gem 'thin'
+gem 'puma'
 gem 'rmagick'
 
 group :development do
