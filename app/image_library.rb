@@ -256,12 +256,12 @@ module Focal
       end
 
       def load_rmagick
-        Magick::Image.read(path).first
+        Magick::Image.read(path).first.auto_orient
       end
 
       def load_rmagick_thumbnail
         ensure_thumbnail_generated
-        Magick::Image.read(thumbnail_path).first
+        Magick::Image.read(thumbnail_path).first.auto_orient
       end
 
       def alternative_format_details
