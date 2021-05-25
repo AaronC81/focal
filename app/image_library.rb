@@ -70,6 +70,22 @@ module Focal
       setting_accessor "album_visibility", ["public", "private"]
       setting_accessor "album_archive_visibility", ["public", "private"]
 
+      def public?
+        album_visibility == "public"
+      end
+
+      def private?
+        album_visibility == "private"
+      end
+
+      def archive_public?
+        album_archive_visibility == "public"
+      end
+
+      def archive_private?
+        album_archive_visibility == "private"
+      end
+
       def images(include_archived: false)
         image_library.album_images(self, include_archived: include_archived)
       end

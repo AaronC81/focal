@@ -21,15 +21,15 @@
                 <p>
                     Who can view this album?
                     <select id="album-visibility-select">
-                        <option value="public"  <%= album.album_visibility == "public"  ? "selected" : "" %>>Anyone</option>
-                        <option value="private" <%= album.album_visibility == "private" ? "selected" : "" %>>Only me</option>
+                        <option value="public"  <%= album.public?  ? "selected" : "" %>>Anyone</option>
+                        <option value="private" <%= album.private? ? "selected" : "" %>>Only me</option>
                     </select>
                 </p>
                 <p>
                     Who can view this album's archived photos?
                     <select id="album-archive-visibility-select">
-                        <option value="public"  <%= album.album_archive_visibility == "public"  ? "selected" : "" %>>Anyone who can view the album</option>
-                        <option value="private" <%= album.album_archive_visibility == "private" ? "selected" : "" %>>Only me</option>
+                        <option value="public"  <%= album.archive_public?  ? "selected" : "" %>>Anyone who can view the album</option>
+                        <option value="private" <%= album.archive_private? ? "selected" : "" %>>Only me</option>
                     </select>
                 </p>
                 <button id="save-visibility-settings" onclick="saveVisibilitySettings()">Save visibility settings</button>
