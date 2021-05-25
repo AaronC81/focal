@@ -113,7 +113,7 @@ module Focal
       get do
         album = request_album
 
-        has_access_to_archived = !(album.archive_public? && !authenticated?)
+        has_access_to_archived = !(!album.archive_public? && !authenticated?)
         include_archived = !!params['archived']
         halt 401 if include_archived && !has_access_to_archived
 
