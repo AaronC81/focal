@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'sinatra/namespace'
 require 'cgi'
 
+require_relative 'thumbnail_cache'
 require_relative 'authentication'
 
 module Focal
@@ -104,9 +105,18 @@ module Focal
     end
 
     get '/thumb/:album/:image' do
+      ThumbnailCache.prepare(settings.image_library)
+
       image = request_image
       image.ensure_thumbnail_generated
-      send_file image.thumbnail_path
+
+      if ThumbnailCache.cached?(image)
+        puts "using cache"
+        content_type 'image/jpeg'
+        ThumbnailCache.thumbnail(image)
+      else
+        send_file image.thumbnail_path
+      end
     end
 
     namespace '/album/:album' do
