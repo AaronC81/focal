@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'sinatra/namespace'
 require 'cgi'
+require 'pathname'
 
 require_relative 'authentication'
 
@@ -44,10 +45,24 @@ module Focal
       
       album
     end
+
+    def send_file_or_accel(path)
+      if settings.x_accel
+        # We need a relative path
+        path = Pathname.new(path)
+        image_library_root = Pathname.new(settings.image_library.library_path)
+        relative_path = path.relative_path_from(image_library_root).to_s
+
+        response.headers["X-Accel-Redirect"] = "/x-accel-library/#{relative_path}"
+        halt 200
+      else
+        send_file(path)
+      end
+    end
     
     namespace '/img/:album/:image' do
       get do
-        send_file request_image.path
+        send_file_or_accel request_image.path
       end
 
       get '/format/:format' do
@@ -61,7 +76,7 @@ module Focal
         filename = File.basename(img.path(alternative_format: format))
         response['Content-Disposition'] = "attachment; filename=\"#{filename}\""
 
-        send_file img.path(alternative_format: format)
+        send_file_or_accel img.path(alternative_format: format)
       end
 
       post '/archive' do
@@ -93,7 +108,7 @@ module Focal
       get do
         album = request_album
         album.ensure_cover_generated
-        send_file album.cover_path
+        send_file_or_accel album.cover_path
       end
 
       post '/regenerate' do
@@ -106,7 +121,7 @@ module Focal
     get '/thumb/:album/:image' do
       image = request_image
       image.ensure_thumbnail_generated
-      send_file image.thumbnail_path
+      send_file_or_accel image.thumbnail_path
     end
 
     namespace '/album/:album' do
