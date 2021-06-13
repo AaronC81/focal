@@ -54,6 +54,7 @@ module Focal
         relative_path = path.relative_path_from(image_library_root).to_s
 
         response.headers["X-Accel-Redirect"] = "/x-accel-library/#{relative_path}"
+        response.headers["Content-Type"] = ""
         halt 200
       else
         send_file(path)
