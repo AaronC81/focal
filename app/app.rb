@@ -30,7 +30,7 @@ module Focal
       if opts[:x_accel]
         # We need a relative path
         path = Pathname.new(path)
-        image_library_root = Pathname.new(settings.image_library.library_path)
+        image_library_root = Pathname.new(opts[:image_library].library_path)
         relative_path = path.relative_path_from(image_library_root).to_s
 
         r.response.headers["X-Accel-Redirect"] = "/x-accel-library/#{relative_path}"
