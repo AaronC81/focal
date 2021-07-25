@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'sinatra'
-gem 'sinatra-contrib'
+gem 'roda'
 gem 'puma'
 gem 'rmagick'
 gem 'fastimage'
+gem 'tilt'
 
 group :development do
   gem 'rspec'

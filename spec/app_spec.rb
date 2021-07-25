@@ -10,7 +10,7 @@ RSpec.describe Focal::App do
   let(:app) { described_class }
 
   before :each do
-    app.set :image_library, create_test_copy
+    app.opts[:image_library] = create_test_copy
   end
 
   def authenticate
