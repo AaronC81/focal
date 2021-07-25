@@ -99,7 +99,7 @@ module Focal
       end
 
       def url
-        "/album/#{CGI.escape(name)}"
+        "/album/#{CGI.escape(name).gsub("+", "%20")}"
       end
 
       def thumbnail_path
@@ -119,7 +119,7 @@ module Focal
       end
 
       def cover_url
-        "/cover/#{CGI.escape(name)}"
+        "/cover/#{CGI.escape(name).gsub("+", "%20")}"
       end
 
       def generate_cover
@@ -211,17 +211,17 @@ module Focal
 
       def url(alternative_format: nil)
         if alternative_format
-          "/img/#{CGI.escape(album.name)}/#{CGI.escape(name)}/format/#{CGI.escape(alternative_format)}"
+          "/img/#{CGI.escape(album.name).gsub("+", "%20")}/#{CGI.escape(name).gsub("+", "%20")}/format/#{CGI.escape(alternative_format).gsub("+", "%20")}"
         else
-          "/img/#{CGI.escape(album.name)}/#{CGI.escape(name)}"
+          "/img/#{CGI.escape(album.name).gsub("+", "%20")}/#{CGI.escape(name).gsub("+", "%20")}"
         end
       end
 
       def thumbnail_url(alternative_format: nil)
         if alternative_format
-          "/thumb/#{CGI.escape(album.name)}/#{CGI.escape(name_format(alternative_format))}"
+          "/thumb/#{CGI.escape(album.name).gsub("+", "%20")}/#{CGI.escape(name_format(alternative_format).gsub("+", "%20"))}"
         else
-          "/thumb/#{CGI.escape(album.name)}/#{CGI.escape(name)}"
+          "/thumb/#{CGI.escape(album.name).gsub("+", "%20")}/#{CGI.escape(name).gsub("+", "%20")}"
         end
       end
 
