@@ -35,7 +35,8 @@ module Focal
 
         r.response.headers["X-Accel-Redirect"] = "/x-accel-library/#{relative_path}"
         r.response.headers["Content-Type"] = ""
-        r.response.status = 200
+        
+        r.halt 200
       else
         send_file(path)
       end
