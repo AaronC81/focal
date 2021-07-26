@@ -76,6 +76,12 @@ module Focal
           send_file_or_accel(r, image.path)
         end
 
+        r.is "authenticated" do 
+          # For this route to be reached, `request_image` mustn't have thrown an
+          # exception, and it does if we're not authenticated 
+          r.halt 200
+        end
+
         r.is "format", String do |format|  
           r.halt 404, 'Format not found' unless image.alternative_formats.include?(format)
   
@@ -181,7 +187,7 @@ module Focal
         end
       end
   
-      r.post '/unauthenticate' do
+      r.post 'unauthenticate' do
         session["authenticated"] = false
         r.redirect '/'
       end
